@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import managers.AuthManager;
 import managers.PublicKeyManager;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ public class JudgeHandler implements HttpHandler {
             sendResponse(405, response.toString().getBytes(StandardCharsets.UTF_8), exchange);
             return;
         }
-
+        System.out.println("Get judges public keys request...");
         Map<String, List<String>> headers = exchange.getRequestHeaders();
         if(!headers.containsKey("Authorization")) {
             response.put("error", "Unauthorized");
@@ -46,7 +47,16 @@ public class JudgeHandler implements HttpHandler {
             return;
         }
 
-        response.put("keys", keys);
+        JSONArray judgeKeys = new JSONArray();
+        for(int key: keys.keySet()) {
+            JSONObject judge = new JSONObject();
+            judge.put("id", key);
+            judge.put("publicKey", keys.get(key));
+            judgeKeys.put(judge);
+        }
+
+        response.put("keys", judgeKeys);
+        System.out.println("Response: " + response.toString());
         sendResponse(200, response.toString().getBytes(StandardCharsets.UTF_8), exchange);
         return;
     }

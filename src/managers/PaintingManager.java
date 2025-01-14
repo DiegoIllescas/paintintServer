@@ -71,7 +71,7 @@ public class PaintingManager {
                 painting.put("id", String.valueOf(result.getInt("id")));
                 painting.put("title", result.getString("title"));
                 painting.put("description", result.getString("description"));
-                painting.put("local_url", result.getString("local_url"));
+                painting.put("painting", loadPaintingFromFile(result.getString("local_url")));
                 painting.put("iv", result.getString("iv"));
                 paintings.add(painting);
             }
@@ -97,7 +97,7 @@ public class PaintingManager {
             return "Error";
         }
     }
-    public static String loadPaintingFromFile(String url) {
+    private static String loadPaintingFromFile(String url) {
         try {
             String filepath = path + url;
             File file = new File(filepath);

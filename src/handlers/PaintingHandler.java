@@ -42,6 +42,7 @@ public class PaintingHandler implements HttpHandler {
 
         if(exchange.getRequestMethod().equalsIgnoreCase("post")) {
             JSONObject request = new JSONObject(new String(exchange.getRequestBody().readAllBytes()));
+            System.out.println("Save painting request: " + request.toString());
             if(!request.has("painting") || !request.has("iv") || !request.has("encrypted_keys") || !request.has("title") || !request.has("description")) {
                 response.put("error", "Missing parameters!");
                 sendResponse(400, response.toString().getBytes(StandardCharsets.UTF_8), exchange);
@@ -50,7 +51,7 @@ public class PaintingHandler implements HttpHandler {
 
             String painting = request.getString("painting");
             String iv = request.getString("iv");
-            JSONObject keysObject = request.getJSONObject("keys");
+            JSONArray keysObject = request.getJSONArray("encrypted_keys");
             String title = request.getString("title");
             String description = request.getString("description");
 
@@ -61,8 +62,8 @@ public class PaintingHandler implements HttpHandler {
                 return;
             }
 
-            for (String key : keysObject.keySet()) {
-                AESKeyManager.saveAesKeys(paintingId, Integer.parseInt(key), keysObject.getString(key));
+            for (int i = 0; i < keysObject.length(); i++) {
+                AESKeyManager.saveAesKeys(paintingId, keysObject.getJSONObject(i).getInt("id"), keysObject.getJSONObject(i).getString("aesKey"));
             }
 
             sendResponse(200, new byte[0], exchange);
@@ -85,6 +86,7 @@ public class PaintingHandler implements HttpHandler {
             }
 
             response.put("paintings", paintingArray);
+            System.out.println("Get all painting not evaluated response: " + response.toString());
             sendResponse(200, response.toString().getBytes(StandardCharsets.UTF_8), exchange);
             return;
         }

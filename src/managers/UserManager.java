@@ -17,15 +17,15 @@ public class UserManager {
             return false;
         }
 
-        String query = "INSERT INTO User(email, name, password, type) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO User(email, password, type, name) VALUES (?, ?, ?, ?)";
         String hashedPassword = Hash.sha256(password);
 
         try {
             PreparedStatement statement = c.prepareStatement(query);
             statement.setString(1, email);
-            statement.setString(2, name);
-            statement.setString(3, hashedPassword);
-            statement.setString(4, type);
+            statement.setString(2, hashedPassword);
+            statement.setString(3, type);
+            statement.setString(4, name);
             int rows = statement.executeUpdate();
 
             con.closeConnection();

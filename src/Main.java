@@ -13,6 +13,8 @@ public class Main {
     private static final String JUDGE_ENDPOINT = "/judge";
     private static final String PAINTING_ENDPOINT = "/painting";
     private static final String EVALUATION_ENDPOINT = "/evaluation";
+    private static final String AUTH_ENDPOINT = "/auth";
+    private static final String ADMIN_ENDPOINT = "/admin";
     private final int port;
 
     private HttpServer server;
@@ -46,6 +48,8 @@ public class Main {
         HttpContext judgeContext = server.createContext(JUDGE_ENDPOINT);
         HttpContext paintingContext = server.createContext(PAINTING_ENDPOINT);
         HttpContext evaluationContext = server.createContext(EVALUATION_ENDPOINT);
+        HttpContext authContext = server.createContext(AUTH_ENDPOINT);
+        HttpContext adminContext = server.createContext(ADMIN_ENDPOINT);
 
         keyContext.setHandler(new KeyRequestHandler());
         consentContext.setHandler(new TermsHandler());
@@ -53,6 +57,8 @@ public class Main {
         judgeContext.setHandler(new JudgeHandler());
         paintingContext.setHandler(new PaintingHandler());
         evaluationContext.setHandler(new EvaluationHandler());
+        authContext.setHandler(new AuthHandler());
+        adminContext.setHandler(new AdminHandler());
 
         server.setExecutor(Executors.newFixedThreadPool(8));
         server.start();

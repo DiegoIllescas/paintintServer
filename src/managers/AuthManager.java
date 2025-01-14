@@ -18,12 +18,12 @@ import java.sql.SQLException;
 public class AuthManager {
     private static final String secret = "24c35fceb2a0eb6e9e026b72227a15599940520bf17bab845ee09b3599341a27";
 
-    public static String auth(String email, String password) {
+    public static String[] auth(String email, String password) {
         String hashedPassword = Hash.sha256(password);
         SQLConnection con = new SQLConnection();
         Connection c = con.getSQLConnection();
         if(c.equals(null)) {
-            return "Error";
+            return new String[0];
         }
 
         String query = "SELECT id, type FROM User WHERE email = ? and password = ?";
@@ -34,16 +34,20 @@ public class AuthManager {
             ResultSet result = statement.executeQuery();
 
             if(!result.next()) {
-                return "Not Found";
+                return new String[0];
             }
 
             int userId = result.getInt("id");
             String type = result.getString("type");
             con.closeConnection();
-            return String.format("%s_%s", generateToken(userId), type);
+
+            String[] res = new String[2];
+            res[0] = generateToken(userId);
+            res[1] = type;
+            return res;
 
         } catch (SQLException e) {
-            return "Error";
+            return new String[0];
         }
     }
 

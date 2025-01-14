@@ -20,6 +20,7 @@ public class AuthHandler implements HttpHandler {
         }
 
         JSONObject request = new JSONObject(new String(exchange.getRequestBody().readAllBytes()));
+        System.out.println("auth request: " + request.toString());
         if(!request.has("email") || !request.has("password")) {
             response.put("error", "Missing parameters!");
             sendResponse(400, response.toString().getBytes(StandardCharsets.UTF_8), exchange);
@@ -29,16 +30,15 @@ public class AuthHandler implements HttpHandler {
         String email = request.getString("email");
         String password = request.getString("password");
 
-        String data = AuthManager.auth(email, password);
-        if(data.equals("Error") || data.equals("Not Found")) {
+        String data[] = AuthManager.auth(email, password);
+        if(data.length == 0 ) {
             response.put("error", "User not found or incorrect password");
             sendResponse(404, response.toString().getBytes(StandardCharsets.UTF_8), exchange);
             return;
         }
 
-        String[] aux = data.split("_");
-        response.put("token", aux[0]);
-        response.put("type", aux[1]);
+        response.put("token", data[0]);
+        response.put("type", data[1]);
         sendResponse(200, response.toString().getBytes(StandardCharsets.UTF_8), exchange);
         return;
     }

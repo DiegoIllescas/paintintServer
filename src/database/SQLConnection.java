@@ -10,7 +10,7 @@ public class SQLConnection {
     private final int port = 3306;
 
     private final String db = "painting";
-    private final String url = String.format("jdbc:mysql://%s:%d/db", host, port, db);
+    private final String url = String.format("jdbc:mysql://%s:%d/%s", host, port, db);
 
     private final String user = "root";
     private final String pass = "";
