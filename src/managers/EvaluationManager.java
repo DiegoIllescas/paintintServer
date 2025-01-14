@@ -73,6 +73,38 @@ public class EvaluationManager {
         }
     }
 
+    public static List<Map<String, String>> getSignedEvaluations() {
+        SQLConnection con = new SQLConnection();
+        Connection c = con.getSQLConnection();
+
+        if(c.equals(null)) {
+            return null;
+        }
+
+        String query = "SELECT signature, stars, comments, painting_id FROM Evaluation WHERE signature is not null";
+
+        try{
+            PreparedStatement statement = c.prepareStatement(query);
+            ResultSet result = statement.executeQuery();
+            List<Map<String, String>> evaluations = new ArrayList<>();
+
+            while (result.next()) {
+                String eval = String.format("%d;%d;%s", result.getInt("painting_id"), result.getInt("stars"), result.getString("comments"));
+                Map<String, String> evaluation = new HashMap<>();
+                evaluation.put("painting_id", String.valueOf(result.getInt("painting_id")));
+                evaluation.put("stars", String.valueOf(result.getInt("stars")));
+                evaluation.put("signature", result.getString("signature"));
+                evaluation.put("message", eval);
+                evaluations.add(evaluation);
+            }
+            con.closeConnection();
+            return evaluations;
+
+        } catch (SQLException e) {
+            return null;
+        }
+    }
+
     public static String getEvaluationById(int id) {
         SQLConnection con = new SQLConnection();
         Connection c = con.getSQLConnection();;

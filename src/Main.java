@@ -15,6 +15,7 @@ public class Main {
     private static final String EVALUATION_ENDPOINT = "/evaluation";
     private static final String AUTH_ENDPOINT = "/auth";
     private static final String ADMIN_ENDPOINT = "/admin";
+    private static final String WINNERS_ENDPOINT = "/winners";
     private final int port;
 
     private HttpServer server;
@@ -50,6 +51,7 @@ public class Main {
         HttpContext evaluationContext = server.createContext(EVALUATION_ENDPOINT);
         HttpContext authContext = server.createContext(AUTH_ENDPOINT);
         HttpContext adminContext = server.createContext(ADMIN_ENDPOINT);
+        HttpContext winnersContext = server.createContext(WINNERS_ENDPOINT);
 
         keyContext.setHandler(new KeyRequestHandler());
         consentContext.setHandler(new TermsHandler());
@@ -59,6 +61,7 @@ public class Main {
         evaluationContext.setHandler(new EvaluationHandler());
         authContext.setHandler(new AuthHandler());
         adminContext.setHandler(new AdminHandler());
+        winnersContext.setHandler(new WinnersHandler());
 
         server.setExecutor(Executors.newFixedThreadPool(8));
         server.start();
